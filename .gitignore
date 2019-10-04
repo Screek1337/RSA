@@ -1,4 +1,4 @@
-./bin
-./include
-./lib
-./pyenv.cfg
+bin/
+include/
+lib/
+pyvenv.cfg
