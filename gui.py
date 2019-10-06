@@ -19,7 +19,8 @@ class GUI(tk.Frame):
                                       width=50, label="Key")
         self.key_field.pack()
 
-        self.encrypt_button = ttk.Button(self, text="Encrypt")
+        self.encrypt_button = ttk.Button(master=self.master,
+                                         text="Encrypt")
         self.encrypt_button.pack()
 
         self.encrypted_field = LabeledEntry(master=self.master,
