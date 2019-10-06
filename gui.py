@@ -11,20 +11,19 @@ class GUI(tk.Frame):
         master.title("RSA Encrypt")
 
     def create_widgets(self):
-        self.source_field = LabeledEntry(master=self.master,
-                                         width=50, label="Source")
+        self.source_field = LabeledEntry(master=self.master, label="Source",
+                                         width=50, foreground="gray70")
         self.source_field.pack()
 
-        self.key_field = LabeledEntry(master=self.master,
-                                      width=50, label="Key")
+        self.key_field = LabeledEntry(master=self.master, label="Key",
+                                      width=50, foreground="gray70")
         self.key_field.pack()
 
-        self.encrypt_button = ttk.Button(master=self.master,
-                                         text="Encrypt")
+        self.encrypt_button = ttk.Button(master=self.master, text="Encrypt")
         self.encrypt_button.pack()
 
-        self.encrypted_field = LabeledEntry(master=self.master,
-                                            width=50, label="Result")
+        self.encrypted_field = LabeledEntry(master=self.master, label="Result",
+                                            width=50, foreground="gray70")
         self.encrypted_field.pack()
 
 
@@ -32,19 +31,22 @@ class LabeledEntry(tk.Entry):
     def __init__(self, master=None, label=None, **kwargs):
         tk.Entry.__init__(self, master, **kwargs)
         self.label = label
-        self.on_exit()
-        self.bind('<FocusIn>', self.on_entry)
-        self.bind('<FocusOut>', self.on_exit)
+        self.on_focus_out()
+        self.bind('<FocusIn>', self.on_focus_in)
+        self.bind('<FocusOut>', self.on_focus_out)
 
-    def on_entry(self, event=None):
+    def on_focus_in(self, event=None):
         if self.get() == self.label:
             self.delete(0, tk.END)
+            self.configure(foreground="black")
 
-    def on_exit(self, event=None):
+    def on_focus_out(self, event=None):
         if not self.get():
+            self.configure(foreground="gray70")
             self.insert(0, self.label)
 
 
-root = tk.Tk()
-app = GUI(master=root)
-app.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = GUI(master=root)
+    app.mainloop()
