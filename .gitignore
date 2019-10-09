@@ -1,5 +1,6 @@
 bin/
 include/
 lib/
+perfomance_test/
 pyvenv.cfg
 dynamic_update_test.py
