@@ -10,24 +10,30 @@ class GUI(tk.Frame):
         master.title("RSA Encrypt")
 
     def create_widgets(self):
+        #  Source widgets
         self.source_field = LabeledEntry(master=self.master, label="Source",
                                          width=30, foreground="gray70")
         self.source_field.grid(row=0, columnspan=3)
 
+        #  Key widgets
         self.key_field = LabeledEntry(master=self.master, label="Key",
                                       width=30, foreground="gray70")
         self.key_field.grid(row=1, columnspan=3)
 
+        #  Encrypt widgets
         self.encrypt_button = ttk.Button(master=self.master, text="Encrypt")
         self.encrypt_button.grid(row=2, column=0)
 
-        self.encrypt_button = ttk.Button(master=self.master, text="Decrypt")
-        self.encrypt_button.grid(row=2, column=1)
+        #  Decrypt widgets
+        self.decrypt_button = ttk.Button(master=self.master, text="Decrypt")
+        self.decrypt_button.grid(row=2, column=1)
 
+        #  Settings widgets
         self.settings_button = ttk.Button(master=self.master, text="Settings",
                                           command=self.settings_menu)
         self.settings_button.grid(row=2, column=2)
 
+        #  Result widgets
         self.encrypted_field = LabeledEntry(master=self.master, label="Result",
                                             width=30, foreground="gray70")
         self.encrypted_field.grid(row=3, columnspan=3)
