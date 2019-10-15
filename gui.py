@@ -60,16 +60,21 @@ class GUI(tk.Frame):
         #  p and q widgets
         self.p_label = tk.Label(master=self.settings_window, text="p=")
         self.p_label.grid(row=3, column=0, sticky="e")
+
         self.p_field = tk.Entry(master=self.settings_window,
                                 textvariable=self.p,
                                 state="readonly")
         self.p_field.grid(row=3, column=1)
+
         self.q_label = tk.Label(master=self.settings_window, text="q=")
         self.q_label.grid(row=4, column=0, sticky="e")
+
         self.q_field = tk.Entry(master=self.settings_window)
         self.q_field.grid(row=4, column=1)
+
         self.p_and_q_label = tk.Label(master=self.settings_window, text="p*q=")
         self.p_and_q_label.grid(row=5, column=0, sticky="e")
+
         self.p_and_q_field = tk.Entry(master=self.settings_window)
         self.p_and_q_field.grid(row=5, column=1)
 
@@ -77,6 +82,7 @@ class GUI(tk.Frame):
         self.stundent_number_label = tk.Label(master=self.settings_window,
                                               text="Student number")
         self.stundent_number_label.grid(row=0, column=0, sticky="e")
+
         self.stundent_number_field = tk.Entry(master=self.settings_window,
                                               textvariable=self.student_number,
                                               width=5)
@@ -86,12 +92,16 @@ class GUI(tk.Frame):
         self.surname_label = tk.Label(master=self.settings_window,
                                       text="Surname")
         self.surname_label.grid(row=1, column=0, sticky="e")
+
         self.surname_field = tk.Entry(master=self.settings_window)
         self.surname_field.grid(row=1, column=1)
+
         self.a1z26_label = tk.Label(master=self.settings_window, text="А1Я33")
         self.a1z26_label.grid(row=2, column=0, sticky="e")
+
         self.a1z26_field = tk.Entry(master=self.settings_window)
         self.a1z26_field.grid(row=2, column=1)
+
         self.a1z26_sum_field = tk.Entry(master=self.settings_window, width=7)
         self.a1z26_sum_field.grid(row=2, column=3)
 
@@ -99,6 +109,7 @@ class GUI(tk.Frame):
         self.euler_func_label = tk.Label(master=self.settings_window,
                                          text="phi(n)=")
         self.euler_func_label.grid(row=6, column=0, sticky="e")
+
         self.euler_func_field = tk.Entry(master=self.settings_window)
         self.euler_func_field.grid(row=6, column=1)
 
