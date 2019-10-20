@@ -4,4 +4,5 @@ lib/
 perfomance_test/
 __pycache__/
 pyvenv.cfg
+.env
 dynamic_update_test.py

@@ -11,11 +11,15 @@ class GUI(tk.Frame):
 
         #  Widgets
         self.p_field = None
+        self.a1z26_field = None
 
         #  Variables
         self.student_number = tk.IntVar()
+        self.student_number.set("")
         self.p = tk.IntVar()
         self.surname = tk.StringVar()
+        self.a1z26 = tk.StringVar()
+        self.a1z26_sum = tk.IntVar()
 
     def create_widgets(self):
         #  Source widgets
@@ -89,20 +93,26 @@ class GUI(tk.Frame):
         self.stundent_number_field.grid(row=0, column=1, sticky="w")
 
         #  Surname widgets
+        self.a1z26_field = tk.Entry(master=self.settings_window,
+                                    textvariable=self.a1z26,
+                                    state="readonly")
+        self.a1z26_field.grid(row=2, column=1)
+
         self.surname_label = tk.Label(master=self.settings_window,
                                       text="Surname")
         self.surname_label.grid(row=1, column=0, sticky="e")
 
-        self.surname_field = tk.Entry(master=self.settings_window)
+        self.surname_field = tk.Entry(master=self.settings_window,
+                                      textvariable=self.surname)
         self.surname_field.grid(row=1, column=1)
 
         self.a1z26_label = tk.Label(master=self.settings_window, text="А1Я33")
         self.a1z26_label.grid(row=2, column=0, sticky="e")
 
-        self.a1z26_field = tk.Entry(master=self.settings_window)
-        self.a1z26_field.grid(row=2, column=1)
-
-        self.a1z26_sum_field = tk.Entry(master=self.settings_window, width=7)
+        self.a1z26_sum_field = tk.Entry(master=self.settings_window,
+                                        textvariable=self.a1z26_sum,
+                                        state="readonly",
+                                        width=7)
         self.a1z26_sum_field.grid(row=2, column=3)
 
         #  Euler function widgets

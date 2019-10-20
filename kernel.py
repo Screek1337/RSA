@@ -1,4 +1,5 @@
 import tkinter as tk
+import re
 from gui import GUI
 
 
@@ -6,6 +7,7 @@ class Kernel(GUI):
     def __init__(self, master=None):
         super().__init__(master)
         self.student_number.trace("rw", self.get_prime)
+        self.surname.trace("rw", self.get_a1z26)
 
     def get_prime(self, *args):
         self.prime_list = [
@@ -19,9 +21,40 @@ class Kernel(GUI):
             else:
                 self.p_field.configure(foreground="gray70")
                 self.p.set("Invalid student number")
-        except tk.TclError:
-            self.p_field.configure(foreground="gray70")
-            self.p.set("Invalid student number")
+        except tk.TclError as exception:
+            if str(exception)[-2:] == "\"\"":
+                self.p_field.configure(foreground="gray70")
+                self.p.set("Enter student number")
+            else:
+                self.p_field.configure(foreground="gray70")
+                self.p.set("Invalid student number")
+
+    def get_a1z26(self, *args):
+        self.a1z26_list = []
+        if len(self.surname.get()) > 0:
+            self.a1z26_field.configure(foreground="black")
+            if re.fullmatch(r"[а-яёА-ЯЁ]*", self.surname.get()):
+                for letter in self.surname.get().lower():
+                    if 7 <= ord(letter) - 1071 < 33:
+                        self.a1z26_list.append((ord(letter) - 1070))
+                    elif ord(letter) - 1071 <= 6:
+                        self.a1z26_list.append((ord(letter) - 1071))
+                    else:
+                        self.a1z26_list.append((7))
+                self.a1z26.set(self.a1z26_list)
+                self.a1z26_sum.set(sum(self.a1z26_list))
+            else:
+                self.a1z26_sum.set("")
+                self.a1z26_field.configure(foreground="gray70")
+                self.a1z26.set("Invalid surname")
+
+        else:
+            self.a1z26_sum.set("")
+            self.a1z26_field.configure(foreground="gray70")
+            self.a1z26.set("Enter surname")
+
+    def get_q(self, *args):
+        pass
 
 
 if __name__ == "__main__":
