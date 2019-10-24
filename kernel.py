@@ -14,6 +14,9 @@ class Kernel(GUI):
         self.student_number.trace("rw", self.get_prime)
         self.surname.trace("rw", self.get_a1z26)
         self.a1z26_sum.trace("rw", self.get_q)
+        self.p.trace("rw", self.get_p_and_q)
+        self.q.trace("rw", self.get_p_and_q)
+        self.p_and_q.trace("rw", self.get_phi)
 
     def get_prime(self, *args):
         try:
@@ -80,6 +83,22 @@ class Kernel(GUI):
             else:
                 self.q_field.configure(foreground="gray70")
                 self.q.set("Enter surname")
+
+    def get_p_and_q(self, *args):
+        try:
+            self.p_and_q.set(self.p.get() * self.q.get())
+            self.p_and_q_field.configure(foreground="black")
+        except tk.TclError:
+            self.p_and_q_field.configure(foreground="gray70")
+            self.p_and_q.set("Invalid p or q")
+
+    def get_phi(self, *args):
+        try:
+            self.phi.set((self.p.get() - 1) * (self.q.get() - 1))
+            self.euler_func_field.configure(foreground="black")
+        except tk.TclError:
+            self.euler_func_field.configure(foreground="gray70")
+            self.phi.set("Invalid p or q")
 
 
 if __name__ == "__main__":
