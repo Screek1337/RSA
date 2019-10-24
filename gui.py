@@ -66,56 +66,25 @@ class GUI(tk.Frame):
         self.settings_window = tk.Toplevel(master=self.master)
         self.settings_window.title("Settings")
 
-        #  Euler function widgets
-        self.euler_func_label = tk.Label(master=self.settings_window,
-                                         text="phi(n)=")
-        self.euler_func_label.grid(row=6, column=0, sticky="e")
-
-        self.euler_func_field = tk.Entry(master=self.settings_window,
-                                         state="readonly")
-        self.euler_func_field.configure(textvariable=self.phi)
-        self.euler_func_field.grid(row=6, column=1)
-
-        #  p and q widgets
-        self.p_and_q_label = tk.Label(master=self.settings_window, text="p*q=")
-        self.p_and_q_label.grid(row=5, column=0, sticky="e")
-
-        self.p_and_q_field = tk.Entry(master=self.settings_window,
-                                      state="readonly")
-        self.p_and_q_field.configure(textvariable=self.p_and_q)
-        self.p_and_q_field.grid(row=5, column=1)
-
-        #  p widgets
-        self.p_label = tk.Label(master=self.settings_window, text="p=")
-        self.p_label.grid(row=3, column=0, sticky="e")
-
-        self.p_field = tk.Entry(master=self.settings_window,
-                                textvariable=self.p,
-                                state="readonly")
-        self.p_field.grid(row=3, column=1)
-
-        #  q widgets
-        self.q_label = tk.Label(master=self.settings_window, text="q=")
-        self.q_label.grid(row=4, column=0, sticky="e")
-
-        self.q_field = tk.Entry(master=self.settings_window,
-                                textvariable=self.q,
-                                state="readonly")
-        self.q_field.grid(row=4, column=1)
-
         #  Student number widgets
         self.stundent_number_label = tk.Label(master=self.settings_window,
                                               text="Student number")
         self.stundent_number_label.grid(row=0, column=0, sticky="e")
 
         self.stundent_number_field = tk.Entry(master=self.settings_window,
-                                              textvariable=self.student_number,
                                               width=5)
         self.stundent_number_field.grid(row=0, column=1, sticky="w")
 
+        #  Surname widgets
+        self.surname_label = tk.Label(master=self.settings_window,
+                                      text="Surname")
+        self.surname_label.grid(row=1, column=0, sticky="e")
+
+        self.surname_field = tk.Entry(master=self.settings_window)
+        self.surname_field.grid(row=1, column=1)
+
         #  a1z26 widgets
         self.a1z26_field = tk.Entry(master=self.settings_window,
-                                    textvariable=self.a1z26,
                                     state="readonly")
         self.a1z26_field.grid(row=2, column=1)
 
@@ -123,19 +92,50 @@ class GUI(tk.Frame):
         self.a1z26_label.grid(row=2, column=0, sticky="e")
 
         self.a1z26_sum_field = tk.Entry(master=self.settings_window,
-                                        textvariable=self.a1z26_sum,
                                         state="readonly",
                                         width=7)
         self.a1z26_sum_field.grid(row=2, column=3)
 
-        #  Surname widgets
-        self.surname_label = tk.Label(master=self.settings_window,
-                                      text="Surname")
-        self.surname_label.grid(row=1, column=0, sticky="e")
+        #  p widgets
+        self.p_label = tk.Label(master=self.settings_window, text="p=")
+        self.p_label.grid(row=3, column=0, sticky="e")
 
-        self.surname_field = tk.Entry(master=self.settings_window,
-                                      textvariable=self.surname)
-        self.surname_field.grid(row=1, column=1)
+        self.p_field = tk.Entry(master=self.settings_window, state="readonly")
+        self.p_field.grid(row=3, column=1)
+
+        #  q widgets
+        self.q_label = tk.Label(master=self.settings_window, text="q=")
+        self.q_label.grid(row=4, column=0, sticky="e")
+
+        self.q_field = tk.Entry(master=self.settings_window, state="readonly")
+        self.q_field.grid(row=4, column=1)
+
+        #  p and q widgets
+        self.p_and_q_label = tk.Label(master=self.settings_window, text="p*q=")
+        self.p_and_q_label.grid(row=5, column=0, sticky="e")
+
+        self.p_and_q_field = tk.Entry(master=self.settings_window,
+                                      state="readonly")
+        self.p_and_q_field.grid(row=5, column=1)
+
+        #  Euler function widgets
+        self.euler_func_label = tk.Label(master=self.settings_window,
+                                         text="phi(n)=")
+        self.euler_func_label.grid(row=6, column=0, sticky="e")
+
+        self.euler_func_field = tk.Entry(master=self.settings_window,
+                                         state="readonly")
+        self.euler_func_field.grid(row=6, column=1)
+
+        #  Assigning variables
+        self.euler_func_field.configure(textvariable=self.phi)
+        self.p_and_q_field.configure(textvariable=self.p_and_q)
+        self.p_field.configure(textvariable=self.p)
+        self.q_field.configure(textvariable=self.q)
+        self.stundent_number_field.configure(textvariable=self.student_number)
+        self.a1z26_field.configure(textvariable=self.a1z26)
+        self.a1z26_sum_field.configure(textvariable=self.a1z26_sum)
+        self.surname_field.configure(textvariable=self.surname)
 
 
 class LabeledEntry(tk.Entry):
