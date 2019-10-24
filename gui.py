@@ -128,14 +128,14 @@ class GUI(tk.Frame):
         self.euler_func_field.grid(row=6, column=1)
 
         #  Assigning variables
-        self.euler_func_field.configure(textvariable=self.phi)
-        self.p_and_q_field.configure(textvariable=self.p_and_q)
-        self.p_field.configure(textvariable=self.p)
-        self.q_field.configure(textvariable=self.q)
         self.stundent_number_field.configure(textvariable=self.student_number)
+        self.surname_field.configure(textvariable=self.surname)
         self.a1z26_field.configure(textvariable=self.a1z26)
         self.a1z26_sum_field.configure(textvariable=self.a1z26_sum)
-        self.surname_field.configure(textvariable=self.surname)
+        self.p_field.configure(textvariable=self.p)
+        self.q_field.configure(textvariable=self.q)
+        self.p_and_q_field.configure(textvariable=self.p_and_q)
+        self.euler_func_field.configure(textvariable=self.phi)
 
 
 class LabeledEntry(tk.Entry):
