@@ -3,6 +3,9 @@ import re
 from bisect import bisect_left
 from gui import GUI
 
+#  TODO
+#  Show/hide auto calculated settings parameters
+
 
 class Kernel(GUI):
     def __init__(self, master=None):
@@ -11,13 +14,19 @@ class Kernel(GUI):
             2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61,
             67, 71, 73, 79, 83, 89, 97
         ]
+        self.encrypt_button.configure(command=self.encrypt)
+
         self.student_number.trace("rw", self.get_prime)
         self.surname.trace("rw", self.get_a1z26)
         self.a1z26_sum.trace("rw", self.get_q)
         self.p.trace("rw", self.get_p_and_q)
         self.q.trace("rw", self.get_p_and_q)
         self.p_and_q.trace("rw", self.get_phi)
+        self.phi.trace("rw", self.get_e)
+        self.e.trace("rw", self.get_d)
 
+    #  TODO
+    #  Rewrite to 2 separate functions (getprime -> insert result to field)
     def get_prime(self, *args):
         try:
             if 0 < self.student_number.get() <= 25:
@@ -34,6 +43,8 @@ class Kernel(GUI):
                 self.p_field.configure(foreground="gray70")
                 self.p.set("Invalid student number")
 
+    #  TODO
+    #  Rewrite to 2 separate funcitons (get1z26 -> insert result to field)
     def get_a1z26(self, *args):
         self.a1z26_list = []
         if len(self.surname.get()) > 0:
@@ -98,7 +109,48 @@ class Kernel(GUI):
             self.euler_func_field.configure(foreground="black")
         except tk.TclError:
             self.euler_func_field.configure(foreground="gray70")
-            self.phi.set("Invalid p or q")
+            self.phi.set("Invalid n")
+
+    def egcd(self, a, b):
+        if a == 0:
+            return b, 0, 1
+        else:
+            g, y, x = self.egcd(b % a, a)
+            return g, x - (b // a) * y, y
+
+    def modinv(self, a, m):
+        g, x, y = self.egcd(a, m)
+        if g != 1:
+            #  TODO
+            #  Rewrite to insert exception to field
+            raise Exception('modular inverse does not exist')
+        else:
+            return x % m
+
+    def get_e(self, *args):
+        try:
+            for e in range(2, self.phi.get()):
+                if self.egcd(self.phi.get(), e)[0] == 1:
+                    self.e_field.configure(foreground="black")
+                    self.e.set(e)
+                    break
+        except tk.TclError:
+            self.e_field.configure(foreground="gray70")
+            self.e.set("Invalid phi")
+
+    def get_d(self, *args):
+        try:
+            self.d.set(self.modinv(self.e.get(), self.phi.get()))
+        except (tk.TclError, Exception):
+            self.d.set("Invalid e")
+
+    def encrypt_block(self, block):
+        return pow(block, self.e.get(), self.p_and_q.get())
+
+    def encrypt(self):
+        for block in self.source_field.get():
+            self.encrypted_field.insert(0,
+                                        self.encrypt_block(ord(block) - 1071))
 
 
 if __name__ == "__main__":

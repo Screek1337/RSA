@@ -6,14 +6,19 @@ class GUI(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        self.create_widgets()
         master.title("RSA Encrypt")
 
         #  Widgets
+        self.source_field = None
+        self.encrypt_button = None
+        self.encrypted_field = None
+
         self.p_field = None
         self.a1z26_field = None
         self.p_and_q_field = None
         self.euler_func_field = None
+        self.e_field = None
+        self.d_field = None
 
         #  Variables
         self.student_number = tk.IntVar()
@@ -25,6 +30,10 @@ class GUI(tk.Frame):
         self.a1z26 = tk.StringVar()
         self.a1z26_sum = tk.IntVar()
         self.phi = tk.IntVar()
+        self.e = tk.IntVar()
+        self.d = tk.IntVar()
+
+        self.create_widgets()
 
     def create_widgets(self):
         #  Source widgets
@@ -111,7 +120,7 @@ class GUI(tk.Frame):
         self.q_field.grid(row=4, column=1)
 
         #  p and q widgets
-        self.p_and_q_label = tk.Label(master=self.settings_window, text="p*q=")
+        self.p_and_q_label = tk.Label(master=self.settings_window, text="n=")
         self.p_and_q_label.grid(row=5, column=0, sticky="e")
 
         self.p_and_q_field = tk.Entry(master=self.settings_window,
@@ -127,6 +136,20 @@ class GUI(tk.Frame):
                                          state="readonly")
         self.euler_func_field.grid(row=6, column=1)
 
+        #  e widgets
+        self.e_label = tk.Label(master=self.settings_window, text="e=")
+        self.e_label.grid(row=7, column=0, sticky="e")
+
+        self.e_field = tk.Entry(master=self.settings_window, state="readonly")
+        self.e_field.grid(row=7, column=1)
+
+        #  d widgets
+        self.d_label = tk.Label(master=self.settings_window, text="d=")
+        self.d_label.grid(row=8, column=0, sticky="e")
+
+        self.d_field = tk.Entry(master=self.settings_window, state="readonly")
+        self.d_field.grid(row=8, column=1)
+
         #  Assigning variables
         self.stundent_number_field.configure(textvariable=self.student_number)
         self.surname_field.configure(textvariable=self.surname)
@@ -136,6 +159,8 @@ class GUI(tk.Frame):
         self.q_field.configure(textvariable=self.q)
         self.p_and_q_field.configure(textvariable=self.p_and_q)
         self.euler_func_field.configure(textvariable=self.phi)
+        self.e_field.configure(textvariable=self.e)
+        self.d_field.configure(textvariable=self.d)
 
 
 class LabeledEntry(tk.Entry):
