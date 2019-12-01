@@ -17,16 +17,14 @@ class Kernel(GUI):
         self.encrypt_button.configure(command=self.encrypt)
 
         self.student_number.trace("rw", self.get_prime)
-        self.surname.trace("rw", self.get_a1z26)
+        self.surname.trace("rw", self.insert_a1z26)
         self.a1z26_sum.trace("rw", self.get_q)
-        self.p.trace("rw", self.get_p_and_q)
-        self.q.trace("rw", self.get_p_and_q)
-        self.p_and_q.trace("rw", self.get_phi)
+        self.p.trace("rw", self.get_n)
+        self.q.trace("rw", self.get_n)
+        self.n.trace("rw", self.get_phi)
         self.phi.trace("rw", self.get_e)
         self.e.trace("rw", self.get_d)
 
-    #  TODO
-    #  Rewrite to 2 separate functions (getprime -> insert result to field)
     def get_prime(self, *args):
         try:
             if 0 < self.student_number.get() <= 25:
@@ -43,22 +41,23 @@ class Kernel(GUI):
                 self.p_field.configure(foreground="gray70")
                 self.p.set("Invalid student number")
 
-    #  TODO
-    #  Rewrite to 2 separate funcitons (get1z26 -> insert result to field)
-    def get_a1z26(self, *args):
-        self.a1z26_list = []
+    def get_a1z26(self, char):
+        if 7 <= ord(char) - 1071 < 33:
+            return (ord(char) - 1070)
+        elif ord(char) - 1071 <= 6:
+            return (ord(char) - 1071)
+        else:
+            return 7
+
+    def insert_a1z26(self, *args):
+        a1z26_list = []
         if len(self.surname.get()) > 0:
             self.a1z26_field.configure(foreground="black")
             if re.fullmatch(r"[а-яёА-ЯЁ]*", self.surname.get()):
                 for letter in self.surname.get().lower():
-                    if 7 <= ord(letter) - 1071 < 33:
-                        self.a1z26_list.append((ord(letter) - 1070))
-                    elif ord(letter) - 1071 <= 6:
-                        self.a1z26_list.append((ord(letter) - 1071))
-                    else:
-                        self.a1z26_list.append((7))
-                self.a1z26.set(self.a1z26_list)
-                self.a1z26_sum.set(sum(self.a1z26_list))
+                    a1z26_list.append(self.get_a1z26(letter))
+                self.a1z26.set(a1z26_list)
+                self.a1z26_sum.set(sum(a1z26_list))
             else:
                 self.a1z26_sum.set("")
                 self.a1z26_field.configure(foreground="gray70")
@@ -95,13 +94,13 @@ class Kernel(GUI):
                 self.q_field.configure(foreground="gray70")
                 self.q.set("Enter surname")
 
-    def get_p_and_q(self, *args):
+    def get_n(self, *args):
         try:
-            self.p_and_q.set(self.p.get() * self.q.get())
-            self.p_and_q_field.configure(foreground="black")
+            self.n.set(self.p.get() * self.q.get())
+            self.n_field.configure(foreground="black")
         except tk.TclError:
-            self.p_and_q_field.configure(foreground="gray70")
-            self.p_and_q.set("Invalid p or q")
+            self.n_field.configure(foreground="gray70")
+            self.n.set("Invalid p or q")
 
     def get_phi(self, *args):
         try:
@@ -141,16 +140,18 @@ class Kernel(GUI):
     def get_d(self, *args):
         try:
             self.d.set(self.modinv(self.e.get(), self.phi.get()))
+            self.d_field.configure(foreground="black")
         except (tk.TclError, Exception):
+            self.d_field.configure(foreground="gray70")
             self.d.set("Invalid e")
 
     def encrypt_block(self, block):
-        return pow(block, self.e.get(), self.p_and_q.get())
+        return pow(block, self.e.get(), self.n.get())
 
     def encrypt(self):
         for block in self.source_field.get():
-            self.encrypted_field.insert(0,
-                                        self.encrypt_block(ord(block) - 1071))
+            self.encrypted_field.insert(
+                0, self.encrypt_block(self.get_a1z26(block)))
 
 
 if __name__ == "__main__":
