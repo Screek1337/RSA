@@ -3,9 +3,6 @@ import re
 from bisect import bisect_left
 from gui import GUI
 
-#  TODO
-#  Show/hide auto calculated settings parameters
-
 
 class Kernel(GUI):
     def __init__(self, master=None):
