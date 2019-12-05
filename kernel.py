@@ -3,6 +3,12 @@ import re
 from bisect import bisect_left
 from gui import GUI
 
+#  TODO
+#  REGEX PATTERN ^\d+[,]{1} \d+ [:] \d+[,] \d+$
+#  [FIX] ошибки чтения переменных при закрытом окне настроек (костыль - запись)
+#  возможно, стоит избавиться от дефолтных значений ожидания ввода
+#  Дешифрование, проверка наличия ключа и входных данных (?вывод ошибок?)
+
 
 class Kernel(GUI):
     def __init__(self, master=None):
@@ -15,12 +21,15 @@ class Kernel(GUI):
 
         self.student_number.trace("rw", self.get_prime)
         self.surname.trace("rw", self.insert_a1z26)
+        self.generated_keys.trace("w", self.export_keys)
+        self.use_generated_keys_state.trace("w", self.export_keys)
         self.a1z26_sum.trace("rw", self.get_q)
         self.p.trace("rw", self.get_n)
         self.q.trace("rw", self.get_n)
         self.n.trace("rw", self.get_phi)
         self.phi.trace("rw", self.get_e)
         self.e.trace("rw", self.get_d)
+        self.d.trace("rw", self.get_keys)
 
     def get_prime(self, *args):
         try:
@@ -117,9 +126,7 @@ class Kernel(GUI):
     def modinv(self, a, m):
         g, x, y = self.egcd(a, m)
         if g != 1:
-            #  TODO
-            #  Rewrite to insert exception to field
-            raise Exception('modular inverse does not exist')
+            return "Modular inverse doesn`t exist"
         else:
             return x % m
 
@@ -138,17 +145,57 @@ class Kernel(GUI):
         try:
             self.d.set(self.modinv(self.e.get(), self.phi.get()))
             self.d_field.configure(foreground="black")
-        except (tk.TclError, Exception):
+        except tk.TclError:
             self.d_field.configure(foreground="gray70")
             self.d.set("Invalid e")
 
+    def get_keys(self, *args):
+        try:
+            self.generated_keys.set(
+                f"{self.e.get()}, {self.n.get()} : {self.d.get()}, {self.n.get()}"
+            )
+            self.generated_keys_field.configure(foreground="black")
+        except tk.TclError:
+            self.generated_keys_field.configure(foreground="gray70")
+            self.generated_keys.set("Invalid e, d or n")
+
+    def export_keys(self, *args):
+        if self.use_generated_keys_state.get():
+            if self.generated_keys.get() == "Invalid e, d or n":
+                self.key_field.configure(foreground="gray70")
+                self.key_field.delete(0, tk.END)
+                self.key_field.insert(0, self.generated_keys.get())
+                self.key_field.configure(state="readonly")
+            else:
+                if self.key_field.cget("state") == "readonly":
+                    self.key_field.configure(state="normal")
+                self.key_field.configure(foreground="black")
+                self.key_field.delete(0, tk.END)
+                self.key_field.insert(0, self.generated_keys.get())
+        elif self.key_field.get() != self.key_field.label:
+            if self.key_field.cget("state") == "readonly":
+                self.key_field.configure(state="normal")
+            self.key_field.configure(foreground="gray70")
+            self.key_field.delete(0, tk.END)
+            self.key_field.insert(0, self.key_field.label)
+
     def encrypt_block(self, block):
-        return pow(block, self.e.get(), self.n.get())
+        if re.fullmatch(r"^\d+[,]{1} \d+ [:] \d+[,]{1} \d+$",
+                        self.key_field.get()):
+            return pow(block, self.e.get(), self.n.get())
 
     def encrypt(self):
-        for block in self.source_field.get():
-            self.encrypted_field.insert(
-                0, self.encrypt_block(self.get_a1z26(block)))
+        try:
+            encrypted = []
+            #  ПЕРЕПИСАТЬ if под if self.get() == self.label
+            if self.source_field.cget("foreground") == "black":
+                for block in self.source_field.get():
+                    encrypted.append(self.encrypt_block(self.get_a1z26(block)))
+                self.encrypted.set(encrypted)
+            else:
+                print("НЕМА НИХУЯ")
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":

@@ -10,31 +10,35 @@ class GUI(tk.Frame):
 
         #  Widgets
         self.source_field = None
+        self.key_field = None
         self.encrypt_button = None
         self.encrypted_field = None
 
-        self.p_field = None
+        self.generated_keys_field = None
         self.a1z26_field = None
+        self.p_field = None
         self.n_field = None
         self.euler_func_field = None
         self.e_field = None
         self.d_field = None
-
-        self.dropdown_button = None
 
         #  Icons
         self.rightarrow_icon = tk.PhotoImage(file="right-arrow.gif")
         self.downarrow_icon = tk.PhotoImage(file="down-arrow.gif")
 
         #  Variables
-        self.student_number = tk.IntVar()
-        self.student_number.set("")
+        self.source = tk.StringVar()
+        self.key_pair = tk.StringVar()
+        self.encrypted = tk.StringVar()
+        self.student_number = tk.IntVar(value="")
+        self.surname = tk.StringVar()
+        self.generated_keys = tk.StringVar()
+        self.use_generated_keys_state = tk.BooleanVar()
+        self.a1z26 = tk.StringVar()
+        self.a1z26_sum = tk.IntVar()
         self.p = tk.IntVar()
         self.q = tk.IntVar()
         self.n = tk.IntVar()
-        self.surname = tk.StringVar()
-        self.a1z26 = tk.StringVar()
-        self.a1z26_sum = tk.IntVar()
         self.phi = tk.IntVar()
         self.e = tk.IntVar()
         self.d = tk.IntVar()
@@ -42,40 +46,49 @@ class GUI(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        #  Source widgets
+        #  Source field
         self.source_field = LabeledEntry(master=self.master,
                                          label="Source",
+                                         textvariable=self.source,
                                          width=30,
                                          foreground="gray70")
         self.source_field.grid(row=0, columnspan=3)
 
-        #  Key widgets
+        #  Key field
         self.key_field = LabeledEntry(master=self.master,
                                       label="Key",
+                                      textvariable=self.key_pair,
                                       width=30,
                                       foreground="gray70")
         self.key_field.grid(row=1, columnspan=3)
 
-        #  Encrypt widgets
+        #  Encrypt button
         self.encrypt_button = ttk.Button(master=self.master, text="Encrypt")
         self.encrypt_button.grid(row=2, column=0)
 
-        #  Decrypt widgets
+        #  Decrypt button
         self.decrypt_button = ttk.Button(master=self.master, text="Decrypt")
         self.decrypt_button.grid(row=2, column=1)
 
-        #  Settings widgets
+        #  Settings button
         self.settings_button = ttk.Button(master=self.master,
                                           text="Settings",
-                                          command=self.settings_menu)
+                                          command=self.create_settings_menu)
         self.settings_button.grid(row=2, column=2)
 
-        #  Result widgets
+        #  Result field
         self.encrypted_field = LabeledEntry(master=self.master,
                                             label="Result",
+                                            textvariable=self.encrypted,
                                             width=30,
                                             foreground="gray70")
         self.encrypted_field.grid(row=3, columnspan=3)
+
+    def create_settings_menu(self):
+        try:
+            self.settings_window.state()
+        except (AttributeError, tk.TclError):
+            self.settings_menu()
 
     def settings_menu(self):
         self.settings_window = tk.Toplevel(master=self.master)
@@ -111,66 +124,83 @@ class GUI(tk.Frame):
             command=lambda: self.hide_autocalculated(self.hidden))
         self.dropdown_button.grid(row=1, column=2)
 
+        #  {public:secret} keys field
+        self.generated_keys_label = tk.Label(master=self.settings_window,
+                                             text="Keys\n{public:private}")
+        self.generated_keys_label.grid(row=2, column=0, sticky="e")
+
+        self.generated_keys_field = tk.Entry(master=self.settings_window,
+                                             state="readonly")
+        self.generated_keys_field.grid(row=2, column=1)
+
+        #  Use generated keys checkbox
+        self.use_generated_keys = tk.Checkbutton(
+            master=self.settings_window,
+            text="Copy keys",
+            variable=self.use_generated_keys_state)
+        self.use_generated_keys.grid(row=2, column=2, sticky="W")
+
         #  a1z26 widgets
         self.a1z26_field = tk.Entry(master=self.settings_window,
                                     state="readonly")
-        self.a1z26_field.grid(row=2, column=1)
+        self.a1z26_field.grid(row=3, column=1)
 
         self.a1z26_label = tk.Label(master=self.settings_window, text="А1Я33")
-        self.a1z26_label.grid(row=2, column=0, sticky="e")
+        self.a1z26_label.grid(row=3, column=0, sticky="e")
 
         self.a1z26_sum_field = tk.Entry(master=self.settings_window,
                                         state="readonly",
                                         width=7)
-        self.a1z26_sum_field.grid(row=2, column=2)
+        self.a1z26_sum_field.grid(row=3, column=2)
 
         #  p widgets
         self.p_label = tk.Label(master=self.settings_window, text="p=")
-        self.p_label.grid(row=3, column=0, sticky="e")
+        self.p_label.grid(row=4, column=0, sticky="e")
 
         self.p_field = tk.Entry(master=self.settings_window, state="readonly")
-        self.p_field.grid(row=3, column=1)
+        self.p_field.grid(row=4, column=1)
 
         #  q widgets
         self.q_label = tk.Label(master=self.settings_window, text="q=")
-        self.q_label.grid(row=4, column=0, sticky="e")
+        self.q_label.grid(row=5, column=0, sticky="e")
 
         self.q_field = tk.Entry(master=self.settings_window, state="readonly")
-        self.q_field.grid(row=4, column=1)
+        self.q_field.grid(row=5, column=1)
 
         #  p and q widgets
         self.n_label = tk.Label(master=self.settings_window, text="n=")
-        self.n_label.grid(row=5, column=0, sticky="e")
+        self.n_label.grid(row=6, column=0, sticky="e")
 
         self.n_field = tk.Entry(master=self.settings_window, state="readonly")
-        self.n_field.grid(row=5, column=1)
+        self.n_field.grid(row=6, column=1)
 
         #  Euler function widgets
         self.euler_func_label = tk.Label(master=self.settings_window,
                                          text="phi(n)=")
-        self.euler_func_label.grid(row=6, column=0, sticky="e")
+        self.euler_func_label.grid(row=7, column=0, sticky="e")
 
         self.euler_func_field = tk.Entry(master=self.settings_window,
                                          state="readonly")
-        self.euler_func_field.grid(row=6, column=1)
+        self.euler_func_field.grid(row=7, column=1)
 
         #  e widgets
         self.e_label = tk.Label(master=self.settings_window, text="e=")
-        self.e_label.grid(row=7, column=0, sticky="e")
+        self.e_label.grid(row=8, column=0, sticky="e")
 
         self.e_field = tk.Entry(master=self.settings_window, state="readonly")
-        self.e_field.grid(row=7, column=1)
+        self.e_field.grid(row=8, column=1)
 
         #  d widgets
         self.d_label = tk.Label(master=self.settings_window, text="d=")
-        self.d_label.grid(row=8, column=0, sticky="e")
+        self.d_label.grid(row=9, column=0, sticky="e")
 
         self.d_field = tk.Entry(master=self.settings_window, state="readonly")
-        self.d_field.grid(row=8, column=1)
+        self.d_field.grid(row=9, column=1)
 
         #  Assigning variables
         self.stundent_number_field.configure(textvariable=self.student_number)
         self.surname_field.configure(textvariable=self.surname)
+        self.generated_keys_field.configure(textvariable=self.generated_keys)
         self.a1z26_field.configure(textvariable=self.a1z26)
         self.a1z26_sum_field.configure(textvariable=self.a1z26_sum)
         self.p_field.configure(textvariable=self.p)
