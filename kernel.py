@@ -4,7 +4,6 @@ from bisect import bisect_left
 from gui import GUI
 
 #  TODO
-#  REGEX PATTERN ^\d+[,]{1} \d+ [:] \d+[,] \d+$
 #  [FIX] ошибки чтения переменных при закрытом окне настроек (костыль - запись)
 #  возможно, стоит избавиться от дефолтных значений ожидания ввода
 #  Дешифрование, проверка наличия ключа и входных данных (?вывод ошибок?)
@@ -17,7 +16,13 @@ class Kernel(GUI):
             2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61,
             67, 71, 73, 79, 83, 89, 97
         ]
-        self.encrypt_button.configure(command=self.encrypt)
+        self.key_pattern = re.compile(
+            r"(^\d+[,]{1} \d+ [:]{1} \d+[,]{1} \d+$)|(^\d+[,]{1} \d+$)")
+
+        self.encrypt_button.configure(
+            command=lambda: self.process(operation="encrypt"))
+        self.decrypt_button.configure(
+            command=lambda: self.process(operation="decrypt"))
 
         self.student_number.trace("rw", self.get_prime)
         self.surname.trace("rw", self.insert_a1z26)
@@ -47,13 +52,16 @@ class Kernel(GUI):
                 self.p_field.configure(foreground="gray70")
                 self.p.set("Invalid student number")
 
-    def get_a1z26(self, char):
-        if 7 <= ord(char) - 1071 < 33:
-            return (ord(char) - 1070)
-        elif ord(char) - 1071 <= 6:
-            return (ord(char) - 1071)
+    def a1z26_encrypt(self, symbol):
+        if 7 <= ord(symbol) - 1071 < 33:
+            return (ord(symbol) - 1070)
+        elif ord(symbol) - 1071 <= 6:
+            return (ord(symbol) - 1071)
         else:
             return 7
+
+    def a1z26_decrypt(self, symbol):
+
 
     def insert_a1z26(self, *args):
         a1z26_list = []
@@ -61,7 +69,7 @@ class Kernel(GUI):
             self.a1z26_field.configure(foreground="black")
             if re.fullmatch(r"[а-яёА-ЯЁ]*", self.surname.get()):
                 for letter in self.surname.get().lower():
-                    a1z26_list.append(self.get_a1z26(letter))
+                    a1z26_list.append(self.a1z26_encrypt(letter))
                 self.a1z26.set(a1z26_list)
                 self.a1z26_sum.set(sum(a1z26_list))
             else:
@@ -172,6 +180,7 @@ class Kernel(GUI):
                 self.key_field.configure(foreground="black")
                 self.key_field.delete(0, tk.END)
                 self.key_field.insert(0, self.generated_keys.get())
+                self.key_field.configure(state="readonly")
         elif self.key_field.get() != self.key_field.label:
             if self.key_field.cget("state") == "readonly":
                 self.key_field.configure(state="normal")
@@ -179,23 +188,42 @@ class Kernel(GUI):
             self.key_field.delete(0, tk.END)
             self.key_field.insert(0, self.key_field.label)
 
-    def encrypt_block(self, block):
-        if re.fullmatch(r"^\d+[,]{1} \d+ [:] \d+[,]{1} \d+$",
-                        self.key_field.get()):
-            return pow(block, self.e.get(), self.n.get())
+    def check_keys(self):
+        if re.fullmatch(self.key_pattern, self.key_field.get()):
+            keys = [
+                int(i) for i in re.split(",| |:", self.key_field.get())
+                if i.isdigit()
+            ]
+            return keys
+        else:
+            return "КЛЮЧ ГОВНА"
 
-    def encrypt(self):
-        try:
-            encrypted = []
-            #  ПЕРЕПИСАТЬ if под if self.get() == self.label
-            if self.source_field.cget("foreground") == "black":
-                for block in self.source_field.get():
-                    encrypted.append(self.encrypt_block(self.get_a1z26(block)))
+    def process_block(self, keys, block):
+        return pow(block, keys[0], keys[1])
+
+    def process(self, operation=None):
+        if self.source_field.cget("foreground") == "black":
+            keys = self.check_keys()
+            if operation == "encrypt":
+                encrypted = []
+                for block in self.source_field.get().lower():
+                    encrypted.append(
+                        self.process_block(keys[:2],
+                                           self.a1z26_encrypt(block)))
                 self.encrypted.set(encrypted)
+                self.encrypted_field.configure(foreground="black")
             else:
-                print("НЕМА НИХУЯ")
-        except Exception:
-            pass
+                if len(keys) > 2:
+                    keys = keys[2:]
+                decrypted = []
+                for block in self.source_field.get().lower():
+                    #  TODO
+                    #  Вызываем self.process_block для каждого символа block
+                    #  block - номер буквы по ASCII, нужно дешифровать
+                    #  decrypted.append(self.1az26_decrypt(self.process_block(keys[:2], block)))
+                    decrypted.append(self.process_block(keys[:2], self.ge))
+        else:
+            print("НЕМА НИХУЯ")
 
 
 if __name__ == "__main__":

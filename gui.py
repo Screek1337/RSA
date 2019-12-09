@@ -28,7 +28,6 @@ class GUI(tk.Frame):
 
         #  Variables
         self.source = tk.StringVar()
-        self.key_pair = tk.StringVar()
         self.encrypted = tk.StringVar()
         self.student_number = tk.IntVar(value="")
         self.surname = tk.StringVar()
@@ -57,7 +56,6 @@ class GUI(tk.Frame):
         #  Key field
         self.key_field = LabeledEntry(master=self.master,
                                       label="Key",
-                                      textvariable=self.key_pair,
                                       width=30,
                                       foreground="gray70")
         self.key_field.grid(row=1, columnspan=3)
