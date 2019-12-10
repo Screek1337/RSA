@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 
 
 class GUI(tk.Frame):
@@ -12,7 +13,8 @@ class GUI(tk.Frame):
         self.source_field = None
         self.key_field = None
         self.encrypt_button = None
-        self.encrypted_field = None
+        self.result_field = None
+        self.messagebox = tk.messagebox
 
         self.generated_keys_field = None
         self.a1z26_field = None
@@ -28,7 +30,7 @@ class GUI(tk.Frame):
 
         #  Variables
         self.source = tk.StringVar()
-        self.encrypted = tk.StringVar()
+        self.result = tk.StringVar()
         self.student_number = tk.IntVar(value="")
         self.surname = tk.StringVar()
         self.generated_keys = tk.StringVar()
@@ -75,12 +77,12 @@ class GUI(tk.Frame):
         self.settings_button.grid(row=2, column=2)
 
         #  Result field
-        self.encrypted_field = LabeledEntry(master=self.master,
-                                            label="Result",
-                                            textvariable=self.encrypted,
-                                            width=30,
-                                            foreground="gray70")
-        self.encrypted_field.grid(row=3, columnspan=3)
+        self.result_field = LabeledEntry(master=self.master,
+                                         label="Result",
+                                         textvariable=self.result,
+                                         width=30,
+                                         foreground="gray70")
+        self.result_field.grid(row=3, columnspan=3)
 
     def create_settings_menu(self):
         try:

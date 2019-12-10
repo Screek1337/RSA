@@ -4,9 +4,8 @@ from bisect import bisect_left
 from gui import GUI
 
 #  TODO
-#  [FIX] ошибки чтения переменных при закрытом окне настроек (костыль - запись)
-#  возможно, стоит избавиться от дефолтных значений ожидания ввода
-#  Дешифрование, проверка наличия ключа и входных данных (?вывод ошибок?)
+#  Codestyle
+#  Documentation
 
 
 class Kernel(GUI):
@@ -61,7 +60,12 @@ class Kernel(GUI):
             return 7
 
     def a1z26_decrypt(self, symbol):
-
+        if 7 <= symbol < 33:
+            return chr(symbol + 1070)
+        elif symbol <= 6:
+            return chr(symbol + 1071)
+        else:
+            return "ё"
 
     def insert_a1z26(self, *args):
         a1z26_list = []
@@ -196,7 +200,7 @@ class Kernel(GUI):
             ]
             return keys
         else:
-            return "КЛЮЧ ГОВНА"
+            self.messagebox.showerror("Error", "Wrong Key")
 
     def process_block(self, keys, block):
         return pow(block, keys[0], keys[1])
@@ -204,26 +208,28 @@ class Kernel(GUI):
     def process(self, operation=None):
         if self.source_field.cget("foreground") == "black":
             keys = self.check_keys()
-            if operation == "encrypt":
-                encrypted = []
-                for block in self.source_field.get().lower():
-                    encrypted.append(
-                        self.process_block(keys[:2],
-                                           self.a1z26_encrypt(block)))
-                self.encrypted.set(encrypted)
-                self.encrypted_field.configure(foreground="black")
-            else:
-                if len(keys) > 2:
-                    keys = keys[2:]
-                decrypted = []
-                for block in self.source_field.get().lower():
-                    #  TODO
-                    #  Вызываем self.process_block для каждого символа block
-                    #  block - номер буквы по ASCII, нужно дешифровать
-                    #  decrypted.append(self.1az26_decrypt(self.process_block(keys[:2], block)))
-                    decrypted.append(self.process_block(keys[:2], self.ge))
+            if keys:
+                if operation == "encrypt":
+                    encrypted = []
+                    for block in self.source_field.get().lower():
+                        encrypted.append(
+                            self.process_block(keys[:2],
+                                               self.a1z26_encrypt(block)))
+                    self.result.set(encrypted)
+                    self.result_field.configure(foreground="black")
+                else:
+                    if len(keys) > 2:
+                        keys = keys[2:]
+                    decrypted = []
+                    source = [int(i) for i in self.source.get().split()]
+                    for block in source:
+                        decrypted.append(
+                            self.a1z26_decrypt(
+                                self.process_block(keys[:2], block)))
+                    self.result.set("".join(decrypted))
+                    self.result_field.configure(foreground="black")
         else:
-            print("НЕМА НИХУЯ")
+            self.messagebox.showerror("Error", "No source")
 
 
 if __name__ == "__main__":
