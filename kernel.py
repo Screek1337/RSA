@@ -6,6 +6,8 @@ from gui import GUI
 #  TODO
 #  Codestyle
 #  Documentation
+#  WHITESPACES???
+#  Case sensitivity???
 
 
 class Kernel(GUI):
@@ -52,7 +54,7 @@ class Kernel(GUI):
                 self.p.set("Invalid student number")
 
     def a1z26_encrypt(self, symbol):
-        if 7 <= ord(symbol) - 1071 < 33:
+        if 8 <= ord(symbol) - 1071 < 33:
             return (ord(symbol) - 1070)
         elif ord(symbol) - 1071 <= 6:
             return (ord(symbol) - 1071)
@@ -60,7 +62,7 @@ class Kernel(GUI):
             return 7
 
     def a1z26_decrypt(self, symbol):
-        if 7 <= symbol < 33:
+        if 8 <= symbol < 33:
             return chr(symbol + 1070)
         elif symbol <= 6:
             return chr(symbol + 1071)
@@ -226,6 +228,7 @@ class Kernel(GUI):
                         decrypted.append(
                             self.a1z26_decrypt(
                                 self.process_block(keys[:2], block)))
+                        print(self.process_block(keys[:2], block))
                     self.result.set("".join(decrypted))
                     self.result_field.configure(foreground="black")
         else:

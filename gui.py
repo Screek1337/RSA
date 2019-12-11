@@ -14,7 +14,7 @@ class GUI(tk.Frame):
         self.key_field = None
         self.encrypt_button = None
         self.result_field = None
-        self.messagebox = tk.messagebox
+        self.messagebox = messagebox  # Tkinter messagebox
 
         self.generated_keys_field = None
         self.a1z26_field = None
